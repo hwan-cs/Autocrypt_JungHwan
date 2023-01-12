@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import MapKit
 
 class MainViewController: UIViewController
 {
@@ -31,7 +32,8 @@ class MainViewController: UIViewController
     private lazy var searchTextField: UISearchTextField =
     {
         let textField = UISearchTextField()
-    
+        textField.tintColor = .systemGray4
+        textField.backgroundColor = .systemGray4
         textField.placeholder = "\tSearch"
         
         return textField
@@ -171,6 +173,82 @@ class MainViewController: UIViewController
         return dfStackView
     }()
     
+    private lazy var rainfallLabel: UILabel =
+    {
+        let rfLabel = UILabel()
+        rfLabel.text = "강수량"
+        rfLabel.textColor = .white
+        rfLabel.font = UIFont.systemFont(ofSize: 16.0, weight: .medium)
+        rfLabel.sizeToFit()
+        
+        return rfLabel
+    }()
+    
+    private lazy var weatherMapView: UIView =
+    {
+        let wmView = UIView()
+        wmView.layer.cornerRadius = 12.0
+        wmView.backgroundColor = H.infoViewColor
+        
+        return wmView
+    }()
+    
+    private lazy var mapView: MKMapView =
+    {
+        let map = MKMapView()
+        map.overrideUserInterfaceStyle = .dark
+        return map
+    }()
+    
+    let moreInfoStackView: UIStackView =
+    {
+        let miStackView = UIStackView()
+        miStackView.axis = .vertical
+        miStackView.alignment = .center
+        miStackView.distribution = .equalSpacing
+        
+        for i in 0..<2
+        {
+            let hStackView = UIStackView()
+            hStackView.axis = .horizontal
+            hStackView.alignment = .center
+            hStackView.distribution = .equalSpacing
+            
+            for j in 0..<2
+            {
+                let infoView = UIView()
+                infoView.layer.cornerRadius = 12.0
+                infoView.backgroundColor = H.infoViewColor
+                
+                let lbl = UILabel()
+                lbl.text = "습도"
+                lbl.textColor = .white
+                
+                infoView.addSubview(lbl)
+                
+                lbl.snp.makeConstraints
+                { make in
+                    make.centerX.centerY.equalToSuperview()
+                }
+                
+                hStackView.addArrangedSubview(infoView)
+                infoView.snp.makeConstraints
+                { make in
+                    make.width.equalTo(hStackView.snp.width).dividedBy(2).inset(4.0)
+                    make.height.equalTo(hStackView.snp.width).dividedBy(2).inset(4.0)
+                }
+            }
+            miStackView.addArrangedSubview(hStackView)
+            hStackView.snp.makeConstraints
+            { make in
+                make.left.right.equalToSuperview()
+                make.height.equalTo(miStackView.snp.height).dividedBy(2)
+            }
+        }
+
+        return miStackView
+    }()
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -215,7 +293,7 @@ private extension MainViewController
 
     func attribute()
     {
-        view.backgroundColor = .systemMint
+        view.backgroundColor = H.mainColor
     }
     
     func setupLayout()
@@ -371,7 +449,6 @@ private extension MainViewController
             make.top.equalTo(hourlyForecastView.snp.bottom).offset(12.0)
             make.leading.trailing.equalToSuperview().inset(12.0)
             make.height.equalTo(250.0)
-            make.bottom.equalToSuperview()
         }
         
         dailyForecastView.addSubview(dailyForecastDescriptionLabel)
@@ -467,6 +544,46 @@ private extension MainViewController
                 make.top.equalTo(forecastView.snp.bottom).offset(4.0)
                 make.leading.trailing.equalTo(contentView).inset(24.0)
             }
+        }
+        
+        contentView.addSubview(weatherMapView)
+        
+        weatherMapView.snp.makeConstraints
+        { make in
+            make.top.equalTo(dailyForecastView.snp.bottom).offset(12.0)
+            make.leading.trailing.equalToSuperview().inset(12.0)
+            make.height.equalTo(400.0)
+        }
+        
+        weatherMapView.addSubview(rainfallLabel)
+        
+        rainfallLabel.snp.makeConstraints
+        { make in
+            make.top.equalTo(weatherMapView).offset(12.0)
+            make.leading.equalTo(weatherMapView.snp.leading).offset(12.0)
+        }
+        
+        weatherMapView.addSubview(mapView)
+        
+        let pin = MKPointAnnotation()
+        pin.title = "Pin"
+        pin.coordinate = CLLocationCoordinate2D(latitude: 36.78361, longitude: 127.004173)
+        mapView.addAnnotation(pin)
+        
+        mapView.snp.makeConstraints
+        { make in
+            make.top.equalTo(rainfallLabel.snp.bottom).offset(12.0)
+            make.left.right.bottom.equalTo(weatherMapView).inset(12.0)
+        }
+        
+        contentView.addSubview(moreInfoStackView)
+        
+        moreInfoStackView.snp.makeConstraints
+        { make in
+            make.top.equalTo(weatherMapView.snp.bottom).offset(12.0)
+            make.left.right.equalToSuperview().inset(12.0)
+            make.height.equalTo(400.0)
+            make.bottom.equalToSuperview()
         }
     }
 }
