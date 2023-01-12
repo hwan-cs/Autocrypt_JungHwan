@@ -36,8 +36,18 @@ class MainViewController: UIViewController
         textField.backgroundColor = .systemGray4
         textField.placeholder = "\tSearch"
         
+        let tap = UITapGestureRecognizer(target: self, action: #selector(presentSearchVC))
+        textField.addGestureRecognizer(tap)
+        
         return textField
     }()
+
+    @objc func presentSearchVC()
+    {
+        let nv = SearchViewController()
+        nv.modalPresentationStyle = .fullScreen
+        self.present(nv, animated: true)
+    }
     
     private lazy var cityLabel: UILabel =
     {
