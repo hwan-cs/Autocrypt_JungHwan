@@ -25,7 +25,7 @@ class SearchViewController: UIViewController
     
     private var cancellable = Set<AnyCancellable>()
     
-    var onDismissBlock : ((Bool, WeatherResult) -> Void)?
+    var onDismissBlock : ((Bool, WeatherResult, CityList) -> Void)?
     
     private lazy var searchTextField: UISearchTextField =
     {
@@ -119,7 +119,7 @@ extension SearchViewController: UITableViewDelegate
         guard let url = URL(string: self.makeLink(city: self.filteredCityList[indexPath.row])) else
         { SwiftSpinner.hide(); return }
         
-        
+        print(url)
         
         let request = Resource<WeatherResult>(url: url)
 
@@ -129,7 +129,7 @@ extension SearchViewController: UITableViewDelegate
             { [weak self] result in
                 self!.dismiss(animated: true)
                 {
-                    self!.onDismissBlock!(true, result)
+                    self!.onDismissBlock!(true, result, self!.filteredCityList[indexPath.row])
                     SwiftSpinner.hide()
                 }
             }
@@ -175,6 +175,6 @@ extension SearchViewController
 {
     func makeLink(city: CityList) -> String
     {
-        return "https://api.openweathermap.org/data/2.5/weather?id=\(city.id!)&name=\(city.name!)&country=\(city.country!)&lon=\(city.coord!.lon!)&lat=\(city.coord!.lat!)&units=imperial&type=accurate&APPID=\(H.APIKEY)"
+        return "https://api.openweathermap.org/data/2.5/onecall?lat=\(city.coord!.lat!)&lon=\(city.coord!.lon!)&exclude=minutely,alerts&units=metric&appid=\(H.APIKEY)"
     }
 }

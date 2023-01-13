@@ -10,18 +10,15 @@ import UIKit
 
 struct WeatherResult: Codable, Equatable
 {
-    let main: MainDescription? // for temprature
-    let weather: [Weather]? // for icon, description
-    let sys: sys?
-    let visibility: Double?
-    let wind: Wind?
-    var name: String?
+    var hourly: [Hourly]? // for temprature
+    let daily: [Daily]?
+    let current: Current
 }
 
 extension WeatherResult
 {
     static var empty: WeatherResult
     {
-        return WeatherResult(main: nil, weather: nil, sys: nil, visibility: nil, wind: nil, name: nil)
+        return WeatherResult(hourly: nil, daily: nil, current: Current.empty)
     }
 }
