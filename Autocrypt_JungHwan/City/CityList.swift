@@ -14,3 +14,11 @@ struct CityList: Codable, Equatable
     let coord: Coord?
     let country: String?
 }
+
+extension CityList
+{
+    static var empty: CityList
+    {
+        return CityList(id: 0, name: nil, coord: nil, country: nil)
+    }
+}

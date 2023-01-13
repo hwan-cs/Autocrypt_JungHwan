@@ -46,6 +46,18 @@ class MainViewController: UIViewController
     {
         let nv = SearchViewController()
         nv.modalPresentationStyle = .fullScreen
+        nv.onDismissBlock =
+        { success, result in
+            if success
+            {
+                self.weatherResult = result
+                print(self.weatherResult)
+            }
+            else
+            {
+                print("couldnt load weather")
+            }
+        }
         self.present(nv, animated: true)
     }
     
@@ -259,6 +271,8 @@ class MainViewController: UIViewController
         return miStackView
     }()
     
+    var weatherResult: WeatherResult?
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -290,16 +304,6 @@ private extension MainViewController
         attributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSRange(location: (maxIdx?.utf16Offset(in: attributedString.string))!+1, length: 4+String(max).count))
         return attributedString
     }
-    
-//    func alertError() {
-//        let alertController = UIAlertController(title: "Error", message: "City not found", preferredStyle: .alert)
-//        alertController.addAction(UIAlertAction(title: "OK", style: .default) {
-//            _ in
-//            self.textField.text = ""
-//            self.textField.becomeFirstResponder()
-//        })
-//        present(alertController, animated: true, completion: nil)
-//    }
 
     func attribute()
     {
